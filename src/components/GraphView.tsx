@@ -246,9 +246,6 @@ export default function GraphView({ bookmarks }: { bookmarks: Bookmark[] }) {
           cancelAnimationFrame(frameRef.current)
           startSim(W, H, W / 2, H / 2)
         }
-      } else {
-        const bm = bookmarks.find(b => b.id === id)
-        if (bm) window.open(bm.url, '_blank', 'noopener')
       }
     }
     panning.current = false
@@ -318,7 +315,17 @@ export default function GraphView({ bookmarks }: { bookmarks: Bookmark[] }) {
               onClick={e => { if (didDrag.current) e.preventDefault() }}
               style={{ cursor: 'pointer' }}
             >
-              <a href={n.url} target="_blank" rel="noopener noreferrer">
+              <a
+                href={n.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={e => {
+                  if (didDrag.current) {
+                    e.preventDefault()
+                  }
+                  e.stopPropagation()
+                }}
+              >
                 <circle
                   cx={n.x} cy={n.y} r={n.r}
                   fill="var(--ds-background-neutral)"

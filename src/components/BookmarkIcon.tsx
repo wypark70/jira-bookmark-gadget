@@ -31,35 +31,38 @@ export default function BookmarkIcon({ b, dragId, dropId, onDragStart, onDragOve
         ...(dropId === b.id && dragId ? { borderTopWidth: 3, borderTopColor: 'var(--ds-background-brand-bold)' } : {}),
       }}
     >
-      {imgOk === false ? (
-        <span className="flex size-6 shrink-0 items-center justify-center rounded-md text-[10px] font-bold" style={{ background: 'var(--ds-background-brand-subtlest)', color: 'var(--ds-icon-brand)' }}>
-          {b.title.charAt(0).toUpperCase()}
-        </span>
-      ) : (
-        <img
-          src={`https://www.google.com/s2/favicons?domain=${new URL(b.url).hostname}&sz=48`}
-          alt=""
-          width="24"
-          height="24"
-          className={`shrink-0 rounded-md ${imgOk === null ? 'opacity-0' : ''}`}
-          loading="lazy"
-          onLoad={e => setImgOk(e.currentTarget.naturalWidth > 16)}
-          onError={() => setImgOk(false)}
-        />
-      )}
+      <a
+        href={b.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex flex-col items-center gap-1 w-full text-center no-underline"
+        style={{ color: 'inherit' }}
+      >
+        {imgOk === false ? (
+          <span className="flex size-6 shrink-0 items-center justify-center rounded-md text-[10px] font-bold" style={{ background: 'var(--ds-background-brand-subtlest)', color: 'var(--ds-icon-brand)' }}>
+            {b.title.charAt(0).toUpperCase()}
+          </span>
+        ) : (
+          <img
+            src={`https://www.google.com/s2/favicons?domain=${new URL(b.url).hostname}&sz=48`}
+            alt=""
+            width="24"
+            height="24"
+            className={`shrink-0 rounded-md ${imgOk === null ? 'opacity-0' : ''}`}
+            loading="lazy"
+            onLoad={e => setImgOk(e.currentTarget.naturalWidth > 16)}
+            onError={() => setImgOk(false)}
+          />
+        )}
 
-      <div className="min-w-0 w-full max-w-full">
-        <TruncatedText
-          text={b.title}
-          as="a"
-          href={b.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="block w-full text-[11px] font-semibold leading-tight no-underline transition hover:underline"
-          style={{ color: 'var(--ds-text)' }}
-        />
-
-      </div>
+        <div className="min-w-0 w-full max-w-full">
+          <TruncatedText
+            text={b.title}
+            className="block w-full text-[11px] font-semibold leading-tight no-underline transition hover:underline"
+            style={{ color: 'var(--ds-text)' }}
+          />
+        </div>
+      </a>
 
       <div className="absolute right-1.5 top-1.5 flex flex-col gap-0.5 opacity-0 transition-opacity group-hover:opacity-100">
         <button

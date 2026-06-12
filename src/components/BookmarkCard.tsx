@@ -13,7 +13,7 @@ export default function BookmarkCard({ b, dragId, dropId, onDragStart, onDragOve
   onEdit: (b: Bookmark) => void
   onRemove: (id: string) => void
 }) {
-  const [imgErr, setImgErr] = useState(false)
+  const [imgOk, setImgOk] = useState<boolean | null>(null)
 
   return (
     <article
@@ -32,11 +32,9 @@ export default function BookmarkCard({ b, dragId, dropId, onDragStart, onDragOve
       }}
     >
       <div className="flex items-start gap-3">
-        {imgErr ? (
-          <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded" style={{ background: 'var(--ds-background-neutral)', color: 'var(--ds-text-subtlest)' }}>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="10" /><path d="M2 12l3-3 3 3 4-4 4 4 3-3 3 3" />
-            </svg>
+        {imgOk === false ? (
+          <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded text-[11px] font-semibold" style={{ background: 'var(--ds-background-brand-subtlest)', color: 'var(--ds-icon-brand)' }}>
+            {b.title.charAt(0).toUpperCase()}
           </span>
         ) : (
           <img
@@ -44,9 +42,10 @@ export default function BookmarkCard({ b, dragId, dropId, onDragStart, onDragOve
             alt=""
             width="20"
             height="20"
-            className="mt-0.5 shrink-0 rounded"
+            className={`mt-0.5 shrink-0 rounded ${imgOk === null ? 'opacity-0' : ''}`}
             loading="lazy"
-            onError={() => setImgErr(true)}
+            onLoad={e => setImgOk(e.currentTarget.naturalWidth > 16)}
+            onError={() => setImgOk(false)}
           />
         )}
         <div className="min-w-0 flex-1">

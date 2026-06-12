@@ -48,8 +48,6 @@ const DEFAULT_BOOKMARKS: Bookmark[] = [
   { id: id(), title: 'GitHub', url: 'https://github.com', description: 'Where the world builds software', tags: ['github', 'git', 'platform'], createdAt: day(5) },
   { id: id(), title: 'GitLab', url: 'https://gitlab.com', description: 'DevOps platform delivered as a single application', tags: ['gitlab', 'git', 'ci-cd'], createdAt: day(5) },
   { id: id(), title: 'Docker Hub', url: 'https://hub.docker.com', description: 'Container image registry and documentation', tags: ['docker', 'containers', 'devops'], createdAt: day(5) },
-  { id: id(), title: 'Jira REST API', url: 'https://developer.atlassian.com/cloud/jira/platform/rest/v3/', description: 'Jira Cloud REST API reference and guides', tags: ['jira', 'api', 'atlassian'], createdAt: day(5) },
-  { id: id(), title: 'Confluence API', url: 'https://developer.atlassian.com/cloud/confluence/rest/', description: 'Confluence Cloud REST API reference', tags: ['confluence', 'api', 'atlassian'], createdAt: day(5) },
   { id: id(), title: 'Postman', url: 'https://www.postman.com', description: 'API platform for building and using APIs', tags: ['api', 'testing', 'tools'], createdAt: day(6) },
   { id: id(), title: 'Swagger', url: 'https://swagger.io', description: 'API documentation and design tools', tags: ['api', 'docs', 'tools'], createdAt: day(6) },
   { id: id(), title: 'GraphQL', url: 'https://graphql.org', description: 'A query language for your API', tags: ['graphql', 'api', 'backend'], createdAt: day(6) },
@@ -74,6 +72,26 @@ const DEFAULT_BOOKMARKS: Bookmark[] = [
   { id: id(), title: 'Web.dev by Google', url: 'https://web.dev', description: 'Guides and tools for building modern web experiences', tags: ['performance', 'web', 'guides'], createdAt: day(9) },
   { id: id(), title: 'Node Weekly', url: 'https://nodeweekly.com', description: 'Weekly newsletter covering Node.js news and articles', tags: ['node', 'newsletter'], createdAt: day(10) },
   { id: id(), title: 'React Status', url: 'https://react.statuscode.com', description: 'Weekly roundup of React news and articles', tags: ['react', 'newsletter'], createdAt: day(10) },
+  { id: id(), title: 'Atlassian Developer', url: 'https://developer.atlassian.com', description: 'Official Atlassian developer documentation and guides', tags: ['atlassian', 'docs', 'plugin'], createdAt: day(10) },
+  { id: id(), title: 'Forge Platform', url: 'https://developer.atlassian.com/platform/forge/', description: 'Build cloud apps for Atlassian products with Forge', tags: ['atlassian', 'forge', 'serverless'], createdAt: day(10) },
+  { id: id(), title: 'Forge UI Kit', url: 'https://developer.atlassian.com/platform/forge/ui-kit/', description: 'Forge UI components for building Atlassian apps', tags: ['atlassian', 'forge', 'ui'], createdAt: day(10) },
+  { id: id(), title: 'Atlassian Connect', url: 'https://developer.atlassian.com/cloud/jira/platform/about-connect/', description: 'Build cloud apps for Jira and Confluence via Connect', tags: ['atlassian', 'connect', 'api'], createdAt: day(10) },
+  { id: id(), title: 'Forge CLI', url: 'https://developer.atlassian.com/platform/forge/forge-cli/', description: 'Command-line tool for Forge app development', tags: ['atlassian', 'forge', 'cli'], createdAt: day(10) },
+  { id: id(), title: 'Atlassian Design', url: 'https://atlassian.design', description: 'Atlassian Design System, tokens, and component guidelines', tags: ['atlassian', 'design', 'ui'], createdAt: day(11) },
+  { id: id(), title: 'Jira REST API', url: 'https://developer.atlassian.com/cloud/jira/platform/rest/v3/', description: 'Jira Cloud REST API v3 reference', tags: ['jira', 'api', 'atlassian'], createdAt: day(11) },
+  { id: id(), title: 'Jira Platform', url: 'https://developer.atlassian.com/cloud/jira/platform/', description: 'Jira Cloud development platform overview', tags: ['jira', 'platform', 'atlassian'], createdAt: day(11) },
+  { id: id(), title: 'Confluence REST API', url: 'https://developer.atlassian.com/cloud/confluence/rest/', description: 'Confluence Cloud REST API reference', tags: ['confluence', 'api', 'atlassian'], createdAt: day(11) },
+  { id: id(), title: 'Jira Frontend', url: 'https://developer.atlassian.com/cloud/jira/platform/about-jira-frontend/', description: 'Build UI extensions for Jira Cloud', tags: ['jira', 'frontend', 'atlassian'], createdAt: day(11) },
+  { id: id(), title: 'JSM Developers', url: 'https://developer.atlassian.com/cloud/jira/service-desk/', description: 'Jira Service Management developer docs', tags: ['jsm', 'service-desk', 'atlassian'], createdAt: day(11) },
+  { id: id(), title: 'Bitbucket Cloud REST', url: 'https://developer.atlassian.com/cloud/bitbucket/rest/', description: 'Bitbucket Cloud REST API reference', tags: ['bitbucket', 'api', 'atlassian'], createdAt: day(11) },
+  { id: id(), title: 'Forge Custom UI', url: 'https://developer.atlassian.com/platform/forge/custom-ui/', description: 'Build Forge apps with custom UI using React', tags: ['atlassian', 'forge', 'react'], createdAt: day(11) },
+  { id: id(), title: 'Atlassian Community', url: 'https://community.developer.atlassian.com', description: 'Atlassian developer community forums', tags: ['atlassian', 'community', 'forum'], createdAt: day(11) },
+  { id: id(), title: 'Forge Troubleshooting', url: 'https://developer.atlassian.com/platform/forge/troubleshooting/', description: 'Common Forge issues and solutions', tags: ['atlassian', 'forge', 'troubleshoot'], createdAt: day(12) },
+  { id: id(), title: 'Atlassian SDK', url: 'https://developer.atlassian.com/server/framework/atlassian-sdk/', description: 'Atlassian SDK for server/data-center plugin development', tags: ['atlassian', 'sdk', 'server'], createdAt: day(12) },
+  { id: id(), title: 'Jira Server REST', url: 'https://docs.atlassian.com/software/jira/docs/api/REST/latest/', description: 'Jira Server REST API documentation', tags: ['jira', 'api', 'server'], createdAt: day(12) },
+  { id: id(), title: 'Atlassian Plugin SDK', url: 'https://developer.atlassian.com/server/framework/atlassian-sdk/atlassian-plugin-sdk/', description: 'SDK for developing server/data-center plugins', tags: ['atlassian', 'plugin', 'sdk'], createdAt: day(12) },
+  { id: id(), title: 'Marketplace Publisher', url: 'https://developer.atlassian.com/marketplace/', description: 'Publish and manage apps on Atlassian Marketplace', tags: ['atlassian', 'marketplace', 'publish'], createdAt: day(12) },
+  { id: id(), title: 'Test Broken Favicon', url: 'https://thisdomaindoesnotexist123456789.com', description: 'This domain does not exist – tests favicon fallback avatar', tags: ['test'], createdAt: day(12) },
 ]
 
 function loadBookmarks(): Bookmark[] {
@@ -301,7 +319,6 @@ export default function BookmarkManager() {
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                 <path d="M8 3v10M3 8h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
               </svg>
-              Add
             </button>
           </div>
         </div>
@@ -343,7 +360,7 @@ export default function BookmarkManager() {
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+          <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 xl:grid-cols-8">
             {filtered.map(b => (
               <BookmarkIcon
                 key={b.id}

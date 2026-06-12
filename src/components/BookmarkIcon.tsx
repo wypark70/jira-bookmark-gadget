@@ -13,7 +13,7 @@ export default function BookmarkIcon({ b, dragId, dropId, onDragStart, onDragOve
   onEdit: (b: Bookmark) => void
   onRemove: (id: string) => void
 }) {
-  const [imgErr, setImgErr] = useState(false)
+  const [imgOk, setImgOk] = useState<boolean | null>(null)
 
   return (
     <article
@@ -22,7 +22,7 @@ export default function BookmarkIcon({ b, dragId, dropId, onDragStart, onDragOve
       onDragOver={e => { e.preventDefault(); onDragOver() }}
       onDragEnd={onDragEnd}
       onDrop={onDrop}
-      className={`group relative flex flex-col items-center gap-2 rounded-xl border p-4 pt-5 text-center transition-all hover:-translate-y-0.5 ${dragId === b.id ? 'opacity-30' : ''} ${dropId === b.id && dragId ? 'pt-8' : ''}`}
+      className={`group relative flex flex-col items-center justify-center gap-1 rounded-xl border p-2 text-center transition-all hover:-translate-y-0.5 ${dragId === b.id ? 'opacity-30' : ''} ${dropId === b.id && dragId ? 'pt-7' : ''} aspect-square`}
       style={{
         background: 'var(--ds-surface)',
         borderColor: dropId === b.id ? 'var(--ds-border-focused)' : 'var(--ds-border)',
@@ -31,21 +31,20 @@ export default function BookmarkIcon({ b, dragId, dropId, onDragStart, onDragOve
         ...(dropId === b.id && dragId ? { borderTopWidth: 3, borderTopColor: 'var(--ds-background-brand-bold)' } : {}),
       }}
     >
-      {imgErr ? (
-        <span className="flex size-8 shrink-0 items-center justify-center rounded-lg" style={{ background: 'var(--ds-background-neutral)', color: 'var(--ds-text-subtlest)' }}>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="12" cy="12" r="10" /><path d="M2 12l3-3 3 3 4-4 4 4 3-3 3 3" />
-          </svg>
+      {imgOk === false ? (
+        <span className="flex size-6 shrink-0 items-center justify-center rounded-md text-[10px] font-bold" style={{ background: 'var(--ds-background-brand-subtlest)', color: 'var(--ds-icon-brand)' }}>
+          {b.title.charAt(0).toUpperCase()}
         </span>
       ) : (
         <img
-          src={`https://www.google.com/s2/favicons?domain=${new URL(b.url).hostname}&sz=64`}
+          src={`https://www.google.com/s2/favicons?domain=${new URL(b.url).hostname}&sz=48`}
           alt=""
-          width="32"
-          height="32"
-          className="shrink-0 rounded-lg"
+          width="24"
+          height="24"
+          className={`shrink-0 rounded-md ${imgOk === null ? 'opacity-0' : ''}`}
           loading="lazy"
-          onError={() => setImgErr(true)}
+          onLoad={e => setImgOk(e.currentTarget.naturalWidth > 16)}
+          onError={() => setImgOk(false)}
         />
       )}
 
@@ -56,14 +55,10 @@ export default function BookmarkIcon({ b, dragId, dropId, onDragStart, onDragOve
           href={b.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="block w-full text-sm font-semibold no-underline transition hover:underline"
+          className="block w-full text-[11px] font-semibold leading-tight no-underline transition hover:underline"
           style={{ color: 'var(--ds-text)' }}
         />
-        <TruncatedText
-          text={new URL(b.url).hostname}
-          className="mt-0.5 block w-full text-xs"
-          style={{ color: 'var(--ds-text-subtlest)' }}
-        />
+
       </div>
 
       <div className="absolute right-1.5 top-1.5 flex flex-col gap-0.5 opacity-0 transition-opacity group-hover:opacity-100">

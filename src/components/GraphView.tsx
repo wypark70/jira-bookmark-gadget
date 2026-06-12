@@ -39,7 +39,7 @@ interface SimNode {
   r: number
 }
 
-export default function GraphView({ bookmarks }: { bookmarks: Bookmark[] }) {
+export default function GraphView({ bookmarks, onVisit }: { bookmarks: Bookmark[]; onVisit: (id: string) => void }) {
   const svgRef = useRef<SVGSVGElement>(null)
   const [hovered, setHovered] = useState<string | null>(null)
   const [renderNodes, setRenderNodes] = useState<RenderNode[]>([])
@@ -135,7 +135,9 @@ export default function GraphView({ bookmarks }: { bookmarks: Bookmark[] }) {
     const H = svg.clientHeight || 600
     const cx = W / 2
     const cy = H / 2
-    const spread = Math.min(W, H) * 0.35
+    const spread = Math.min(W, H) * 0.25
+    panRef.current = { tx: 0, ty: 0, scale: 1 }
+    setView({ tx: 0, ty: 0, scale: 1 })
 
     hostnameMap.current = {}
     bookmarks.forEach(b => { hostnameMap.current[b.id] = new URL(b.url).hostname })
@@ -216,8 +218,8 @@ export default function GraphView({ bookmarks }: { bookmarks: Bookmark[] }) {
       const g = screenToGraph(e.clientX - rect.left, e.clientY - rect.top)
       const node = simRef.current.find(n => n.id === dn)
       if (node) {
-        node.x = Math.max(10, Math.min(8000, g.x))
-        node.y = Math.max(10, Math.min(6000, g.y))
+        node.x = Math.max(10, Math.min(svg.clientWidth - 10, g.x))
+        node.y = Math.max(10, Math.min(svg.clientHeight - 10, g.y))
         setRenderNodes(simRef.current.map(n => ({ id: n.id, x: n.x, y: n.y, r: n.r, title: bookmarks.find(b => b.id === n.id)?.title ?? '', url: bookmarks.find(b => b.id === n.id)?.url ?? '', hostname: hostnameMap.current[n.id] ?? '' })))
       }
       return
@@ -239,13 +241,11 @@ export default function GraphView({ bookmarks }: { bookmarks: Bookmark[] }) {
       dragNode.current = null
       if (did) {
         pinnedNodes.current = new Set(pinnedNodes.current).add(id)
-        const svg = svgRef.current
-        if (svg) {
-          const W = svg.clientWidth || 800
-          const H = svg.clientHeight || 600
-          cancelAnimationFrame(frameRef.current)
-          startSim(W, H, W / 2, H / 2)
-        }
+        const s = svgRef.current
+        const sw = s ? s.clientWidth : 800
+        const sh = s ? s.clientHeight : 600
+        cancelAnimationFrame(frameRef.current)
+        startSim(sw, sh, sw / 2, sh / 2)
       }
     }
     panning.current = false
@@ -254,14 +254,14 @@ export default function GraphView({ bookmarks }: { bookmarks: Bookmark[] }) {
   function resetGraph() {
     cancelAnimationFrame(frameRef.current)
     pinnedNodes.current = new Set()
-    setView({ tx: 0, ty: 0, scale: 1 })
     const svg = svgRef.current
-    if (!svg) return
-    const W = svg.clientWidth || 800
-    const H = svg.clientHeight || 600
+    const W = svg ? svg.clientWidth : 800
+    const H = svg ? svg.clientHeight : 600
     const cx = W / 2
     const cy = H / 2
-    const spread = Math.min(W, H) * 0.35
+    const spread = Math.min(W, H) * 0.25
+    panRef.current = { tx: 0, ty: 0, scale: 1 }
+    setView({ tx: 0, ty: 0, scale: 1 })
     simRef.current.forEach(n => {
       n.x = cx + (Math.random() - 0.5) * spread * 2
       n.y = cy + (Math.random() - 0.5) * spread * 2
@@ -273,10 +273,11 @@ export default function GraphView({ bookmarks }: { bookmarks: Bookmark[] }) {
   }
 
   return (
-    <div className="relative">
+    <div className="relative min-h-0 flex-1">
       <svg
         ref={svgRef}
-        className="h-[600px] w-full rounded-xl cursor-grab"
+        className="absolute inset-0 cursor-grab"
+        width="100%" height="100%"
         style={{ background: 'var(--ds-surface)' }}
         onWheel={onWheel}
         onMouseDown={onMouseDown}
@@ -284,7 +285,7 @@ export default function GraphView({ bookmarks }: { bookmarks: Bookmark[] }) {
         onMouseUp={onMouseUp}
         onMouseLeave={onMouseUp}
       >
-      <g transform={`translate(${view.tx}, ${view.ty}) scale(${view.scale})`}>
+      <g transform={`scale(${view.scale}) translate(${view.tx}, ${view.ty})`}>
         {renderEdges.map(e => {
           const a = renderNodes.find(n => n.id === e.source)
           const b = renderNodes.find(n => n.id === e.target)
@@ -322,6 +323,8 @@ export default function GraphView({ bookmarks }: { bookmarks: Bookmark[] }) {
                 onClick={e => {
                   if (didDrag.current) {
                     e.preventDefault()
+                  } else {
+                    onVisit(n.id)
                   }
                   e.stopPropagation()
                 }}

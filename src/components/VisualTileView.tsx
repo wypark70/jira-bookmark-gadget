@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import type { Bookmark } from '../types'
 
-export default function VisualTileView({ bookmarks, dragId, dropId, onDragStart, onDragOver, onDragEnd, onDrop, onEdit, onRemove }: {
+export default function VisualTileView({ bookmarks, dragId, dropId, onDragStart, onDragOver, onDragEnd, onDrop, onEdit, onRemove, onVisit }: {
   bookmarks: Bookmark[]
   dragId: string | null
   dropId: string | null
@@ -11,6 +11,7 @@ export default function VisualTileView({ bookmarks, dragId, dropId, onDragStart,
   onDrop: (id: string) => void
   onEdit: (b: Bookmark) => void
   onRemove: (id: string) => void
+  onVisit: (id: string) => void
 }) {
   return (
     <div className="columns-2 gap-4 sm:columns-3 lg:columns-4">
@@ -26,13 +27,14 @@ export default function VisualTileView({ bookmarks, dragId, dropId, onDragStart,
           onDrop={() => onDrop(b.id)}
           onEdit={() => onEdit(b)}
           onRemove={() => onRemove(b.id)}
+          onVisit={() => onVisit(b.id)}
         />
       ))}
     </div>
   )
 }
 
-function VisualTile({ b, dragging, droptarget, onDragStart, onDragOver, onDragEnd, onDrop, onEdit, onRemove }: {
+function VisualTile({ b, dragging, droptarget, onDragStart, onDragOver, onDragEnd, onDrop, onEdit, onRemove, onVisit }: {
   b: Bookmark
   dragging: boolean
   droptarget: boolean
@@ -42,6 +44,7 @@ function VisualTile({ b, dragging, droptarget, onDragStart, onDragOver, onDragEn
   onDrop: () => void
   onEdit: () => void
   onRemove: () => void
+  onVisit: () => void
 }) {
   const hostname = new URL(b.url).hostname
   const faviconSrc = `https://www.google.com/s2/favicons?domain=${hostname}&sz=128`
@@ -81,6 +84,7 @@ function VisualTile({ b, dragging, droptarget, onDragStart, onDragOver, onDragEn
         target="_blank"
         rel="noopener noreferrer"
         className="block no-underline hover:-translate-y-0.5 transition-transform"
+        onClick={onVisit}
       >
         <div className="relative aspect-[4/3] w-full overflow-hidden" style={{ background: 'var(--ds-background-neutral)' }}>
           <img

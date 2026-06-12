@@ -13,26 +13,28 @@ function timeAgo(ts: number): string {
   return `${Math.floor(days / 365)} years ago`
 }
 
-export default function TimelineView({ bookmarks, onEdit, onRemove }: {
+export default function TimelineView({ bookmarks, onEdit, onRemove, onVisit }: {
   bookmarks: Bookmark[]
   onEdit: (b: Bookmark) => void
   onRemove: (id: string) => void
+  onVisit: (id: string) => void
 }) {
   return (
     <div className="relative mx-auto max-w-2xl">
       <div className="absolute bottom-0 left-[19px] top-0 w-px" style={{ background: 'var(--ds-border)' }} />
       {bookmarks
         .slice()
-        .sort((a, b) => b.createdAt - a.createdAt)
-        .map((b) => <TimelineEntry key={b.id} b={b} onEdit={onEdit} onRemove={onRemove} />)}
+        .sort((a, b) => (b.lastVisitedAt ?? b.createdAt) - (a.lastVisitedAt ?? a.createdAt))
+        .map((b) => <TimelineEntry key={b.id} b={b} onEdit={onEdit} onRemove={onRemove} onVisit={onVisit} />)}
     </div>
   )
 }
 
-function TimelineEntry({ b, onEdit, onRemove }: {
+function TimelineEntry({ b, onEdit, onRemove, onVisit }: {
   b: Bookmark
   onEdit: (b: Bookmark) => void
   onRemove: (id: string) => void
+  onVisit: (id: string) => void
 }) {
   const [imgOk, setImgOk] = useState<boolean | null>(null)
   const hostname = new URL(b.url).hostname
@@ -86,9 +88,10 @@ function TimelineEntry({ b, onEdit, onRemove }: {
                 rel="noopener noreferrer"
                 className="block text-sm font-semibold no-underline transition hover:underline"
                 style={{ color: 'var(--ds-text)' }}
+                onClick={() => onVisit(b.id)}
               />
               <span className="shrink-0 text-[11px]" style={{ color: 'var(--ds-text-subtlest)' }}>
-                {timeAgo(b.createdAt)}
+                {timeAgo(b.lastVisitedAt ?? b.createdAt)}
               </span>
             </div>
             <TruncatedText

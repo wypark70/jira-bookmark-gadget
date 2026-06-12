@@ -5,6 +5,7 @@ export interface Bookmark {
   description: string
   tags: string[]
   createdAt: number
+  lastVisitedAt?: number
 }
 
 export type ViewMode = 'card' | 'icon' | 'graph' | 'timeline' | 'visual'

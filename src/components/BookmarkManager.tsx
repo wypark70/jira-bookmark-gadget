@@ -235,12 +235,16 @@ export default function BookmarkManager() {
     }
   }
 
+  function handleVisit(id: string) {
+    setBookmarks(prev => prev.map(b => b.id === id ? { ...b, lastVisitedAt: Date.now() } : b))
+  }
+
   function handleFormChange(field: string, value: string) {
     setForm(f => ({ ...f, [field]: value }))
   }
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: 'var(--ds-surface-sunken)' }}>
+    <div className={`${viewMode === 'graph' ? 'h-screen' : 'min-h-screen'} flex flex-col`} style={{ background: 'var(--ds-surface-sunken)' }}>
       <header
         className="sticky top-0 z-50 border-b px-4 py-3"
         style={{
@@ -356,7 +360,7 @@ export default function BookmarkManager() {
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-6">
+      <main className={viewMode === 'graph' ? 'mx-auto w-full max-w-5xl flex flex-1 flex-col min-h-0' : 'mx-auto w-full max-w-5xl flex-1 px-4 py-6'}>
         {filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 text-center">
             <div
@@ -388,6 +392,7 @@ export default function BookmarkManager() {
                 onDrop={() => moveBookmark(b.id)}
                 onEdit={openEdit}
                 onRemove={remove}
+                onVisit={handleVisit}
               />
             ))}
           </div>
@@ -405,13 +410,14 @@ export default function BookmarkManager() {
                 onDrop={() => moveBookmark(b.id)}
                 onEdit={openEdit}
                 onRemove={remove}
+                onVisit={handleVisit}
               />
             ))}
           </div>
         ) : viewMode === 'graph' ? (
-          <GraphView bookmarks={filtered} />
+          <GraphView bookmarks={filtered} onVisit={handleVisit} />
         ) : viewMode === 'timeline' ? (
-          <TimelineView bookmarks={filtered} onEdit={openEdit} onRemove={remove} />
+          <TimelineView bookmarks={filtered} onEdit={openEdit} onRemove={remove} onVisit={handleVisit} />
         ) : (
           <VisualTileView
             bookmarks={filtered}
@@ -423,6 +429,7 @@ export default function BookmarkManager() {
             onDrop={moveBookmark}
             onEdit={openEdit}
             onRemove={remove}
+            onVisit={handleVisit}
           />
         )}
       </main>

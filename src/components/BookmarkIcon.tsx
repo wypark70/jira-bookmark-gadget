@@ -2,7 +2,7 @@ import { useState } from 'react'
 import type { Bookmark } from '../types'
 import TruncatedText from './TruncatedText'
 
-export default function BookmarkIcon({ b, dragId, dropId, onDragStart, onDragOver, onDragEnd, onDrop, onEdit, onRemove }: {
+export default function BookmarkIcon({ b, dragId, dropId, onDragStart, onDragOver, onDragEnd, onDrop, onEdit, onRemove, onVisit }: {
   b: Bookmark
   dragId: string | null
   dropId: string | null
@@ -12,6 +12,7 @@ export default function BookmarkIcon({ b, dragId, dropId, onDragStart, onDragOve
   onDrop: () => void
   onEdit: (b: Bookmark) => void
   onRemove: (id: string) => void
+  onVisit: (id: string) => void
 }) {
   const [imgOk, setImgOk] = useState<boolean | null>(null)
 
@@ -37,6 +38,7 @@ export default function BookmarkIcon({ b, dragId, dropId, onDragStart, onDragOve
         rel="noopener noreferrer"
         className="flex flex-col items-center gap-1 w-full text-center no-underline"
         style={{ color: 'inherit' }}
+        onClick={() => onVisit(b.id)}
       >
         {imgOk === false ? (
           <span className="flex size-6 shrink-0 items-center justify-center rounded-md text-[10px] font-bold" style={{ background: 'var(--ds-background-brand-subtlest)', color: 'var(--ds-icon-brand)' }}>

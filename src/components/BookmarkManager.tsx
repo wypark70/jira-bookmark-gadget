@@ -5,6 +5,7 @@ import BookmarkCard from './BookmarkCard'
 import BookmarkIcon from './BookmarkIcon'
 import BookmarkModal from './BookmarkModal'
 import ThemeToggle from './ThemeToggle'
+import GraphView from './GraphView'
 
 const STORAGE_KEY = 'jira-bookmarks'
 
@@ -113,7 +114,7 @@ function saveBookmarks(bookmarks: Bookmark[]) {
 function loadViewMode(): ViewMode {
   try {
     const raw = localStorage.getItem('jira-bookmarks-view')
-    if (raw === 'card' || raw === 'icon') return raw
+    if (raw === 'card' || raw === 'icon' || raw === 'graph') return raw
   } catch { /* ignore */ }
   return 'card'
 }
@@ -278,49 +279,63 @@ export default function BookmarkManager() {
             </div>
           </div>
 
-          <div className="flex items-center gap-1.5">
-            <button
-              type="button"
-              onClick={() => setViewMode(m => m === 'card' ? 'icon' : 'card')}
-              className="inline-flex size-9 cursor-pointer items-center justify-center rounded-lg border text-xs transition active:scale-90"
-              style={{
-                background: 'var(--ds-background-neutral-subtle)',
-                borderColor: 'var(--ds-border)',
-                color: 'var(--ds-text-subtlest)',
-              }}
-              title={viewMode === 'card' ? 'Icon view' : 'Card view'}
-            >
-              {viewMode === 'card' ? (
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                  <rect x="2" y="2" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.5" />
-                  <rect x="9" y="2" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.5" />
-                  <rect x="2" y="9" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.5" />
-                  <rect x="9" y="9" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.5" />
-                </svg>
-              ) : (
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                  <rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" strokeWidth="1.5" />
-                  <path d="M5 6h6M5 9h4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                </svg>
-              )}
-            </button>
-            <button
-              type="button"
-              onClick={openAdd}
-              className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border px-4 py-2 text-sm font-medium transition active:scale-95"
-              style={{
-                background: 'var(--ds-background-brand-bold)',
-                borderColor: 'transparent',
-                color: 'var(--ds-text-inverse)',
-              }}
-              onMouseEnter={e => (e.currentTarget.style.background = 'var(--ds-background-brand-bold-hovered)')}
-              onMouseLeave={e => (e.currentTarget.style.background = 'var(--ds-background-brand-bold)')}
-            >
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path d="M8 3v10M3 8h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-              </svg>
-            </button>
+          <div className="flex items-center gap-0.5 rounded-lg border p-0.5" style={{ borderColor: 'var(--ds-border)', background: 'var(--ds-background-neutral-subtle)' }}>
+            {(['card', 'icon', 'graph'] as const).map(mode => {
+              const active = viewMode === mode
+              return (
+                <button
+                  key={mode}
+                  type="button"
+                  onClick={() => setViewMode(mode)}
+                  className="inline-flex size-8 cursor-pointer items-center justify-center rounded-md text-xs transition active:scale-90"
+                  style={{
+                    background: active ? 'var(--ds-background-brand-bold)' : 'transparent',
+                    color: active ? 'var(--ds-text-inverse)' : 'var(--ds-text-subtlest)',
+                  }}
+                  title={mode === 'card' ? 'Card view' : mode === 'icon' ? 'Icon view' : 'Graph view'}
+                >
+                  {mode === 'card' ? (
+                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                      <rect x="2" y="2" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.5" />
+                      <rect x="9" y="2" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.5" />
+                      <rect x="2" y="9" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.5" />
+                      <rect x="9" y="9" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.5" />
+                    </svg>
+                  ) : mode === 'icon' ? (
+                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                      <rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" strokeWidth="1.5" />
+                      <path d="M5 6h6M5 9h4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                    </svg>
+                  ) : (
+                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                      <circle cx="8" cy="4" r="2" stroke="currentColor" strokeWidth="1.5" />
+                      <circle cx="4" cy="12" r="2" stroke="currentColor" strokeWidth="1.5" />
+                      <circle cx="12" cy="12" r="2" stroke="currentColor" strokeWidth="1.5" />
+                      <line x1="7" y1="5.5" x2="5" y2="10.5" stroke="currentColor" strokeWidth="1.5" />
+                      <line x1="9" y1="5.5" x2="11" y2="10.5" stroke="currentColor" strokeWidth="1.5" />
+                      <line x1="5" y1="12" x2="11" y2="12" stroke="currentColor" strokeWidth="1.5" />
+                    </svg>
+                  )}
+                </button>
+              )
+            })}
           </div>
+          <button
+            type="button"
+            onClick={openAdd}
+            className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border px-4 py-2 text-sm font-medium transition active:scale-95"
+            style={{
+              background: 'var(--ds-background-brand-bold)',
+              borderColor: 'transparent',
+              color: 'var(--ds-text-inverse)',
+            }}
+            onMouseEnter={e => (e.currentTarget.style.background = 'var(--ds-background-brand-bold-hovered)')}
+            onMouseLeave={e => (e.currentTarget.style.background = 'var(--ds-background-brand-bold)')}
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M8 3v10M3 8h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+            </svg>
+          </button>
         </div>
       </header>
 
@@ -359,7 +374,7 @@ export default function BookmarkManager() {
               />
             ))}
           </div>
-        ) : (
+        ) : viewMode === 'icon' ? (
           <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 xl:grid-cols-8">
             {filtered.map(b => (
               <BookmarkIcon
@@ -376,6 +391,8 @@ export default function BookmarkManager() {
               />
             ))}
           </div>
+        ) : (
+          <GraphView bookmarks={filtered} />
         )}
       </main>
 

@@ -2,7 +2,7 @@ import { useState } from 'react'
 import type { Bookmark } from '../types'
 import TruncatedText from './TruncatedText'
 
-export default function BookmarkCard({ b, dragId, dropId, onDragStart, onDragOver, onDragEnd, onDrop, onEdit, onRemove }: {
+export default function BookmarkCard({ b, dragId, dropId, onDragStart, onDragOver, onDragEnd, onDrop, onEdit, onRemove, onVisit }: {
   b: Bookmark
   dragId: string | null
   dropId: string | null
@@ -12,6 +12,7 @@ export default function BookmarkCard({ b, dragId, dropId, onDragStart, onDragOve
   onDrop: () => void
   onEdit: (b: Bookmark) => void
   onRemove: (id: string) => void
+  onVisit: (id: string) => void
 }) {
   const [imgOk, setImgOk] = useState<boolean | null>(null)
 
@@ -32,22 +33,30 @@ export default function BookmarkCard({ b, dragId, dropId, onDragStart, onDragOve
       }}
     >
       <div className="flex items-start gap-3">
-        {imgOk === false ? (
-          <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded text-[11px] font-semibold" style={{ background: 'var(--ds-background-brand-subtlest)', color: 'var(--ds-icon-brand)' }}>
-            {b.title.charAt(0).toUpperCase()}
-          </span>
-        ) : (
-          <img
-            src={`https://www.google.com/s2/favicons?domain=${new URL(b.url).hostname}&sz=32`}
-            alt=""
-            width="20"
-            height="20"
-            className={`mt-0.5 shrink-0 rounded ${imgOk === null ? 'opacity-0' : ''}`}
-            loading="lazy"
-            onLoad={e => setImgOk(e.currentTarget.naturalWidth > 16)}
-            onError={() => setImgOk(false)}
-          />
-        )}
+        <a
+          href={b.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block"
+          onClick={() => onVisit(b.id)}
+        >
+          {imgOk === false ? (
+            <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded text-[11px] font-semibold" style={{ background: 'var(--ds-background-brand-subtlest)', color: 'var(--ds-icon-brand)' }}>
+              {b.title.charAt(0).toUpperCase()}
+            </span>
+          ) : (
+            <img
+              src={`https://www.google.com/s2/favicons?domain=${new URL(b.url).hostname}&sz=32`}
+              alt=""
+              width="20"
+              height="20"
+              className={`mt-0.5 shrink-0 rounded ${imgOk === null ? 'opacity-0' : ''}`}
+              loading="lazy"
+              onLoad={e => setImgOk(e.currentTarget.naturalWidth > 16)}
+              onError={() => setImgOk(false)}
+            />
+          )}
+        </a>
         <div className="min-w-0 flex-1">
           <TruncatedText
             text={b.title}
@@ -57,6 +66,7 @@ export default function BookmarkCard({ b, dragId, dropId, onDragStart, onDragOve
             rel="noopener noreferrer"
             className="block text-sm font-semibold no-underline transition hover:underline"
             style={{ color: 'var(--ds-text)' }}
+            onClick={() => onVisit(b.id)}
           />
           <TruncatedText
             text={new URL(b.url).hostname}

@@ -282,7 +282,7 @@ export default function BookmarkManager() {
           </div>
 
           <div className="flex items-center gap-0.5 rounded-lg border p-0.5" style={{ borderColor: 'var(--ds-border)', background: 'var(--ds-background-neutral-subtle)' }}>
-            {(['card', 'icon', 'graph', 'timeline', 'visual'] as const).map(mode => {
+            {(['card', 'icon', 'visual', 'timeline', 'graph'] as const).map(mode => {
               const active = viewMode === mode
               return (
                 <button

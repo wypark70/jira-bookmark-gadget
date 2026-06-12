@@ -6,6 +6,8 @@ import BookmarkIcon from './BookmarkIcon'
 import BookmarkModal from './BookmarkModal'
 import ThemeToggle from './ThemeToggle'
 import GraphView from './GraphView'
+import TimelineView from './TimelineView'
+import VisualTileView from './VisualTileView'
 
 const STORAGE_KEY = 'jira-bookmarks'
 
@@ -114,7 +116,7 @@ function saveBookmarks(bookmarks: Bookmark[]) {
 function loadViewMode(): ViewMode {
   try {
     const raw = localStorage.getItem('jira-bookmarks-view')
-    if (raw === 'card' || raw === 'icon' || raw === 'graph') return raw
+    if (raw === 'card' || raw === 'icon' || raw === 'graph' || raw === 'timeline' || raw === 'visual') return raw
   } catch { /* ignore */ }
   return 'card'
 }
@@ -240,7 +242,7 @@ export default function BookmarkManager() {
   return (
     <div className="min-h-screen flex flex-col" style={{ background: 'var(--ds-surface-sunken)' }}>
       <header
-        className="sticky top-0 z-10 border-b px-4 py-3"
+        className="sticky top-0 z-50 border-b px-4 py-3"
         style={{
           background: 'var(--ds-surface)',
           borderColor: 'var(--ds-border)',
@@ -280,7 +282,7 @@ export default function BookmarkManager() {
           </div>
 
           <div className="flex items-center gap-0.5 rounded-lg border p-0.5" style={{ borderColor: 'var(--ds-border)', background: 'var(--ds-background-neutral-subtle)' }}>
-            {(['card', 'icon', 'graph'] as const).map(mode => {
+            {(['card', 'icon', 'graph', 'timeline', 'visual'] as const).map(mode => {
               const active = viewMode === mode
               return (
                 <button
@@ -292,7 +294,7 @@ export default function BookmarkManager() {
                     background: active ? 'var(--ds-background-brand-bold)' : 'transparent',
                     color: active ? 'var(--ds-text-inverse)' : 'var(--ds-text-subtlest)',
                   }}
-                  title={mode === 'card' ? 'Card view' : mode === 'icon' ? 'Icon view' : 'Graph view'}
+                  title={mode === 'card' ? 'Card view' : mode === 'icon' ? 'Icon view' : mode === 'graph' ? 'Graph view' : mode === 'timeline' ? 'Timeline view' : 'Visual view'}
                 >
                   {mode === 'card' ? (
                     <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
@@ -306,7 +308,7 @@ export default function BookmarkManager() {
                       <rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" strokeWidth="1.5" />
                       <path d="M5 6h6M5 9h4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
                     </svg>
-                  ) : (
+                  ) : mode === 'graph' ? (
                     <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
                       <circle cx="8" cy="4" r="2" stroke="currentColor" strokeWidth="1.5" />
                       <circle cx="4" cy="12" r="2" stroke="currentColor" strokeWidth="1.5" />
@@ -314,6 +316,21 @@ export default function BookmarkManager() {
                       <line x1="7" y1="5.5" x2="5" y2="10.5" stroke="currentColor" strokeWidth="1.5" />
                       <line x1="9" y1="5.5" x2="11" y2="10.5" stroke="currentColor" strokeWidth="1.5" />
                       <line x1="5" y1="12" x2="11" y2="12" stroke="currentColor" strokeWidth="1.5" />
+                    </svg>
+                  ) : mode === 'timeline' ? (
+                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                      <circle cx="8" cy="2" r="1.5" stroke="currentColor" strokeWidth="1.2" />
+                      <line x1="8" y1="3.5" x2="8" y2="7" stroke="currentColor" strokeWidth="1.2" />
+                      <rect x="5" y="7" width="6" height="3" rx="1" stroke="currentColor" strokeWidth="1.2" />
+                      <line x1="8" y1="10" x2="8" y2="12" stroke="currentColor" strokeWidth="1.2" />
+                      <circle cx="8" cy="14" r="1.5" stroke="currentColor" strokeWidth="1.2" />
+                    </svg>
+                  ) : (
+                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                      <rect x="1" y="1" width="14" height="14" rx="2" stroke="currentColor" strokeWidth="1.2" />
+                      <rect x="3" y="3" width="5" height="4" rx="0.5" stroke="currentColor" strokeWidth="0.8" />
+                      <rect x="9" y="3" width="4" height="4" rx="0.5" stroke="currentColor" strokeWidth="0.8" />
+                      <rect x="3" y="8.5" width="10" height="4.5" rx="0.5" stroke="currentColor" strokeWidth="0.8" />
                     </svg>
                   )}
                 </button>
@@ -391,8 +408,22 @@ export default function BookmarkManager() {
               />
             ))}
           </div>
-        ) : (
+        ) : viewMode === 'graph' ? (
           <GraphView bookmarks={filtered} />
+        ) : viewMode === 'timeline' ? (
+          <TimelineView bookmarks={filtered} onEdit={openEdit} onRemove={remove} />
+        ) : (
+          <VisualTileView
+            bookmarks={filtered}
+            dragId={dragId}
+            dropId={dropId}
+            onDragStart={id => { setDragId(id); setDropId(null) }}
+            onDragOver={id => setDropId(id)}
+            onDragEnd={() => { setDragId(null); setDropId(null) }}
+            onDrop={moveBookmark}
+            onEdit={openEdit}
+            onRemove={remove}
+          />
         )}
       </main>
 

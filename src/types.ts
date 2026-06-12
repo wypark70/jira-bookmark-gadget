@@ -7,4 +7,4 @@ export interface Bookmark {
   createdAt: number
 }
 
-export type ViewMode = 'card' | 'icon' | 'graph'
+export type ViewMode = 'card' | 'icon' | 'graph' | 'timeline' | 'visual'
